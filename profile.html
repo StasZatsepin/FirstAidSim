@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:;">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Профиль пользователя - FirstAidSim</title>
+    <!-- Защита от копирования -->
+    <script src="scripts/protection.js"></script>
+    <!-- Стили - модульная структура -->
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/layout.css">
+    <link rel="stylesheet" href="styles/simulator.css">
+    <link rel="stylesheet" href="styles/visualizations.css">
+    <link rel="stylesheet" href="styles/pages.css">
+    <link rel="stylesheet" href="styles/profile.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Header (Шапка) -->
+        <header class="site-header">
+            <div class="header-container">
+                <div class="logo">
+                    <h1><a href="index.html" style="text-decoration: none; color: inherit;">FirstAidSim</a></h1>
+                </div>
+                <nav class="main-nav" id="mainNav">
+                    <ul class="nav-list">
+                        <li><a href="index.html" class="nav-link">Главная</a></li>
+                        <li><a href="index.html#scenarios" class="nav-link">Сценарии</a></li>
+                        <li><a href="index.html#theory" class="nav-link">Теория</a></li>
+                        <li><a href="index.html#about" class="nav-link">О проекте</a></li>
+                    </ul>
+                </nav>
+                <div class="user-menu" id="userMenu">
+                    <button class="btn-auth" id="loginButton" onclick="openLoginModal()" style="display: none;">
+                        <span class="btn-icon">🔐</span>
+                        <span class="btn-text">Войти</span>
+                    </button>
+                    <button class="btn-auth btn-register" id="registerButton" onclick="openRegisterModal()" style="display: none;">
+                        <span class="btn-icon">📝</span>
+                        <span class="btn-text">Регистрация</span>
+                    </button>
+                    <button class="btn-profile" id="profileButton" style="display: none;">
+                        <span class="user-avatar" id="userAvatar">U</span>
+                        <span class="user-name" id="userName">Пользователь</span>
+                    </button>
+                    <button class="btn-logout" id="logoutButton" onclick="logoutUser()" style="display: none;">
+                        <span class="btn-icon">🚪</span>
+                        <span class="btn-text">Выйти</span>
+                    </button>
+                </div>
+                <button class="nav-toggle" id="navToggle" aria-label="Открыть меню">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Модальное окно входа -->
+        <div class="modal" id="loginModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Вход в систему</h2>
+                    <button class="modal-close" onclick="closeLoginModal()">&times;</button>
+                </div>
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" name="email" required autocomplete="email">
+                        <span class="form-error" id="loginEmailError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Пароль</label>
+                        <input type="password" id="loginPassword" name="password" required autocomplete="current-password">
+                        <span class="form-error" id="loginPasswordError"></span>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Войти</button>
+                        <button type="button" class="btn-secondary" onclick="closeLoginModal(); openRegisterModal();">
+                            Нет аккаунта? Зарегистрироваться
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Модальное окно регистрации -->
+        <div class="modal" id="registerModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Регистрация</h2>
+                    <button class="modal-close" onclick="closeRegisterModal()">&times;</button>
+                </div>
+                <form id="registerForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" id="registerEmail" name="email" required autocomplete="email">
+                        <span class="form-error" id="registerEmailError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Пароль</label>
+                        <input type="password" id="registerPassword" name="password" required autocomplete="new-password" minlength="6">
+                        <span class="form-hint">Минимум 6 символов</span>
+                        <span class="form-error" id="registerPasswordError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerConfirmPassword">Подтвердите пароль</label>
+                        <input type="password" id="registerConfirmPassword" name="confirmPassword" required autocomplete="new-password">
+                        <span class="form-error" id="registerConfirmPasswordError"></span>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Зарегистрироваться</button>
+                        <button type="button" class="btn-secondary" onclick="closeRegisterModal(); openLoginModal();">
+                            Уже есть аккаунт? Войти
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <section class="page-section active">
+                <div class="profile-section">
+                    <div class="profile-header">
+                        <h2 class="section-title">Профиль пользователя</h2>
+                        <button class="back-button" onclick="window.location.href='index.html'">← На главную</button>
+                    </div>
+                    
+                    <div class="profile-content" id="profileContent">
+                        <!-- Контент будет загружен через JavaScript -->
+                        <div class="profile-empty">
+                            <div class="empty-icon">👤</div>
+                            <h3>Загрузка профиля...</h3>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Футер -->
+        <footer class="site-footer">
+            <div class="footer-container">
+                <div class="footer-content">
+                    <div class="footer-section footer-main">
+                        <h3 class="footer-title">FirstAidSim</h3>
+                        <p class="footer-description">Интерактивный тренажер для обучения навыкам оказания первой помощи</p>
+                    </div>
+                    <div class="footer-section footer-social">
+                        <h4 class="footer-heading">Социальные сети</h4>
+                        <div class="social-links">
+                            <a href="https://vk.com" target="_blank" rel="noopener noreferrer" class="social-link" title="ВКонтакте">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12.785 16.241s.288-.029.436-.18c.136-.137.132-.393.132-.393s-.02-1.123.515-1.288c.526-.164 1.203 1.09 1.92 1.571.54.36.95.28.95.28l1.92-.028s1.003-.066.526-.86c-.039-.066-.276-.58-1.43-1.643-1.21-1.12-1.05-.47.41-1.44.28-.19.49-.62.49-.62s.088-.52-.088-.6c-.177-.08-.44-.052-.44-.052h-1.13s-.84.01-1.05.34c-.21.33-.77 1.1-.77 1.1s-.14.27-.33.27c-.19 0-.5-.27-.5-.27s-.89-1.18-1.24-1.58c-.17-.2-.37-.27-.37-.27h-.94s-.52.02-.68.24c-.16.22-.01.68-.01.68s.63 1.48 1.35 2.28c1.28 1.28 1.71 1.51 1.93 1.23.22-.28.16-1.12.16-1.12s.01-.4-.11-.54c-.12-.14-.35-.18-.35-.18h-.68s-.51.02-.66.16c-.15.14-.01.45-.01.45s.11.35.25.52c.25.3.42.39.42.39s.19.12.19.31c0 .19-.23.31-.23.31s-.19.06-.42-.06c-.23-.12-.49-.35-.68-.6-.19-.25-.35-.5-.35-.5s-.03-.19.11-.31c.14-.12.35-.12.35-.12h.19s.19-.02.27-.12c.08-.1.05-.19.05-.19s-.03-.25-.19-.35c-.16-.1-.45-.1-.45-.1h-.94s-.68.02-.84.19c-.16.17-.01.52-.01.52s.8 1.88 1.7 2.83c.83.88 1.77 1.23 1.77 1.23h.47s.19.01.26.11c.07.1.01.31.01.31s-.03.89.19 1.01c.22.12.49-.06.49-.06s.73-.51 1.24-1.01c.51-.5 1.02-1.01 1.02-1.01z"/>
+                                </svg>
+                                <span>ВКонтакте</span>
+                            </a>
+                            <a href="https://t.me" target="_blank" rel="noopener noreferrer" class="social-link" title="Telegram">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161l-1.97 9.276c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.12l-6.87 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+                                </svg>
+                                <span>Telegram</span>
+                            </a>
+                            <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="social-link" title="GitHub">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                </svg>
+                                <span>GitHub</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; <span id="currentYearFooter"></span> FirstAidSim Team. Все права защищены.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Скрипты -->
+    <script src="scripts/auth.js"></script>
+    <script src="scripts/user.js"></script>
+    <script src="scripts/achievements.js"></script>
+    <script src="scripts/profile.js"></script>
+    <script>
+        // Функция для тестирования профиля (доступна в консоли браузера)
+        window.testProfile = function() {
+            console.log('=== ТЕСТ ПРОФИЛЯ ===');
+            console.log('1. Проверка функций:');
+            console.log('  - getUserData:', typeof getUserData);
+            console.log('  - getUserStatistics:', typeof getUserStatistics);
+            console.log('  - getLevelProgress:', typeof getLevelProgress);
+            console.log('  - getUserAchievements:', typeof getUserAchievements);
+            console.log('  - getAchievementsProgress:', typeof getAchievementsProgress);
+            console.log('  - updateUserProfile:', typeof updateUserProfile);
+            console.log('  - loadProfile:', typeof loadProfile);
+            
+            console.log('\n2. Проверка авторизации:');
+            const currentUser = typeof getCurrentUser === 'function' ? getCurrentUser() : null;
+            console.log('  - Текущий пользователь:', currentUser);
+            
+            if (currentUser) {
+                console.log('\n3. Проверка данных пользователя:');
+                const userData = typeof getUserData === 'function' ? getUserData() : null;
+                console.log('  - Данные пользователя:', userData);
+                
+                if (userData) {
+                    console.log('\n4. Проверка статистики:');
+                    const stats = typeof getUserStatistics === 'function' ? getUserStatistics() : null;
+                    console.log('  - Статистика:', stats);
+                    
+                    console.log('\n5. Проверка профиля:');
+                    console.log('  - Имя:', userData.profile.firstName);
+                    console.log('  - Фамилия:', userData.profile.lastName);
+                    console.log('  - Отчество:', userData.profile.middleName);
+                    console.log('  - Email:', userData.email);
+                }
+            } else {
+                console.log('  ⚠️ Пользователь не авторизован!');
+            }
+            
+            console.log('\n6. Проверка DOM элементов:');
+            const profileContent = document.getElementById('profileContent');
+            console.log('  - profileContent:', profileContent ? 'найден' : 'НЕ НАЙДЕН');
+            
+            console.log('\n=== КОНЕЦ ТЕСТА ===');
+            console.log('\nДля перезагрузки профиля выполните: loadProfile()');
+        };
+        
+        // Автоматический тест при загрузке (только в режиме разработки)
+        if (window.location.search.includes('debug=true')) {
+            console.log('Режим отладки включен');
+            setTimeout(() => {
+                window.testProfile();
+            }, 1000);
+        }
+    </script>
+    <script>
+        // Функции для работы с модальными окнами
+        function openLoginModal() {
+            const modal = document.getElementById('loginModal');
+            if (modal) {
+                modal.classList.add('show');
+                document.body.style.overflow = 'hidden';
+                setTimeout(() => {
+                    const emailInput = document.getElementById('loginEmail');
+                    if (emailInput) emailInput.focus();
+                }, 100);
+            }
+        }
+        
+        function closeLoginModal() {
+            const modal = document.getElementById('loginModal');
+            if (modal) {
+                modal.classList.remove('show');
+                document.body.style.overflow = '';
+                const form = document.getElementById('loginForm');
+                if (form) form.reset();
+            }
+        }
+        
+        function openRegisterModal() {
+            const modal = document.getElementById('registerModal');
+            if (modal) {
+                modal.classList.add('show');
+                document.body.style.overflow = 'hidden';
+                setTimeout(() => {
+                    const emailInput = document.getElementById('registerEmail');
+                    if (emailInput) emailInput.focus();
+                }, 100);
+            }
+        }
+        
+        function closeRegisterModal() {
+            const modal = document.getElementById('registerModal');
+            if (modal) {
+                modal.classList.remove('show');
+                document.body.style.overflow = '';
+                const form = document.getElementById('registerForm');
+                if (form) form.reset();
+            }
+        }
+        
+        function closeAllModals() {
+            closeLoginModal();
+            closeRegisterModal();
+        }
+        
+        // Делаем функции доступными глобально
+        window.openLoginModal = openLoginModal;
+        window.closeLoginModal = closeLoginModal;
+        window.openRegisterModal = openRegisterModal;
+        window.closeRegisterModal = closeRegisterModal;
+        
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Проверяем авторизацию
+            if (typeof updateAuthUI === 'function') {
+                updateAuthUI();
+            }
+            
+            // Загружаем профиль с проверкой всех зависимостей
+            function tryLoadProfile(attempts = 0) {
+                const maxAttempts = 50; // 5 секунд максимум
+                
+                if (attempts >= maxAttempts) {
+                    const profileContent = document.getElementById('profileContent');
+                    if (profileContent) {
+                        profileContent.innerHTML = `
+                            <div class="profile-empty">
+                                <div class="empty-icon">⚠️</div>
+                                <h3>Ошибка загрузки</h3>
+                                <p>Не удалось загрузить профиль. Проверьте консоль браузера (F12) для деталей.</p>
+                                <button class="btn-primary" onclick="location.reload()">Обновить страницу</button>
+                            </div>
+                        `;
+                    }
+                    return;
+                }
+                
+                const functionsReady = typeof loadProfile === 'function' && 
+                    typeof getUserData === 'function' &&
+                    typeof getUserStatistics === 'function' &&
+                    typeof getLevelProgress === 'function' &&
+                    typeof getUserAchievements === 'function' &&
+                    typeof getAchievementsProgress === 'function' &&
+                    typeof updateUserProfile === 'function';
+                
+                if (functionsReady) {
+                    console.log('All functions loaded, calling loadProfile()');
+                    try {
+                        loadProfile();
+                    } catch (error) {
+                        console.error('Error in loadProfile:', error);
+                        const profileContent = document.getElementById('profileContent');
+                        if (profileContent) {
+                            profileContent.innerHTML = `
+                                <div class="profile-empty">
+                                    <div class="empty-icon">⚠️</div>
+                                    <h3>Ошибка загрузки</h3>
+                                    <p>Ошибка: ${error.message}</p>
+                                    <button class="btn-primary" onclick="location.reload()">Обновить страницу</button>
+                                </div>
+                            `;
+                        }
+                    }
+                } else {
+                    console.log(`Waiting for scripts to load... (attempt ${attempts + 1}/${maxAttempts})`);
+                    console.log('Functions status:', {
+                        loadProfile: typeof loadProfile,
+                        getUserData: typeof getUserData,
+                        getUserStatistics: typeof getUserStatistics,
+                        getLevelProgress: typeof getLevelProgress,
+                        getUserAchievements: typeof getUserAchievements,
+                        getAchievementsProgress: typeof getAchievementsProgress,
+                        updateUserProfile: typeof updateUserProfile
+                    });
+                    setTimeout(() => tryLoadProfile(attempts + 1), 100);
+                }
+            }
+            
+            // Пробуем загрузить профиль
+            setTimeout(() => tryLoadProfile(0), 200);
+            
+            // Устанавливаем год в футере
+            const currentYear = new Date().getFullYear();
+            const yearElement = document.getElementById('currentYearFooter');
+            if (yearElement) {
+                yearElement.textContent = currentYear;
+            }
+            
+            // Обработчик мобильного меню
+            const navToggle = document.getElementById('navToggle');
+            const mainNav = document.getElementById('mainNav');
+            if (navToggle && mainNav) {
+                navToggle.addEventListener('click', function() {
+                    mainNav.classList.toggle('open');
+                });
+            }
+            
+            // Обработчики форм авторизации
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const email = document.getElementById('loginEmail').value.trim();
+                    const password = document.getElementById('loginPassword').value;
+                    
+                    if (typeof loginUser === 'function') {
+                        const result = loginUser(email, password);
+                        if (result.success) {
+                            closeLoginModal();
+                            setTimeout(() => {
+                                if (typeof updateAuthUI === 'function') {
+                                    updateAuthUI();
+                                }
+                                if (typeof loadProfile === 'function') {
+                                    loadProfile();
+                                }
+                            }, 100);
+                        } else {
+                            const errorEl = document.getElementById('loginEmailError');
+                            if (errorEl) errorEl.textContent = result.message;
+                        }
+                    }
+                });
+            }
+            
+            if (registerForm) {
+                registerForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const email = document.getElementById('registerEmail').value.trim();
+                    const password = document.getElementById('registerPassword').value;
+                    const confirmPassword = document.getElementById('registerConfirmPassword').value;
+                    
+                    if (typeof registerUser === 'function') {
+                        const result = registerUser(email, password, confirmPassword);
+                        if (result.success) {
+                            closeRegisterModal();
+                            setTimeout(() => {
+                                if (typeof updateAuthUI === 'function') {
+                                    updateAuthUI();
+                                }
+                                if (typeof loadProfile === 'function') {
+                                    loadProfile();
+                                }
+                            }, 100);
+                        } else {
+                            const errorEl = document.getElementById('registerEmailError');
+                            if (errorEl) errorEl.textContent = result.message;
+                        }
+                    }
+                });
+            }
+            
+            // Закрытие модальных окон по клику вне их
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeAllModals();
+                    }
+                });
+            });
+            
+            // Закрытие по Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeAllModals();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

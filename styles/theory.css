@@ -1,0 +1,617 @@
+/* ============================================
+   Детальные страницы теории - улучшенные стили
+   ============================================ */
+
+/* Основной контейнер контента теории */
+.theory-content {
+    max-width: 900px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, var(--color-white) 0%, #f8fafc 100%);
+    padding: 48px;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 32px rgba(0, 51, 102, 0.1);
+    border: 1px solid var(--color-border);
+}
+
+/* Блоки теории с улучшенным дизайном */
+.theory-block {
+    margin-bottom: 48px;
+    padding: 32px;
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 2px 12px rgba(0, 51, 102, 0.06);
+    border: 1px solid var(--color-border);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.theory-block::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--color-primary), var(--color-secondary));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.theory-block:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 51, 102, 0.12);
+}
+
+.theory-block:hover::before {
+    opacity: 1;
+}
+
+.theory-block:last-child {
+    margin-bottom: 0;
+}
+
+/* Заголовки блоков */
+.theory-block h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 3px solid var(--color-card);
+    position: relative;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.theory-block h2::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    border-radius: 2px;
+}
+
+.theory-block h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-secondary);
+    margin-top: 32px;
+    margin-bottom: 16px;
+    position: relative;
+    padding-left: 16px;
+}
+
+.theory-block h3::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 24px;
+    background: linear-gradient(180deg, var(--color-primary), var(--color-secondary));
+    border-radius: 2px;
+}
+
+/* Параграфы */
+.theory-block p {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: var(--color-text);
+    margin-bottom: 20px;
+    text-align: justify;
+}
+
+.theory-block p:last-child {
+    margin-bottom: 0;
+}
+
+/* Списки */
+.theory-block ul,
+.theory-block ol {
+    margin: 24px 0;
+    padding-left: 32px;
+}
+
+.theory-block li {
+    font-size: 1.125rem;
+    line-height: 1.9;
+    color: var(--color-text);
+    margin-bottom: 12px;
+    position: relative;
+}
+
+.theory-block ul li::marker {
+    color: var(--color-secondary);
+    font-weight: 600;
+}
+
+.theory-block ol li::marker {
+    color: var(--color-secondary);
+    font-weight: 700;
+}
+
+.theory-block li strong {
+    color: var(--color-secondary);
+    font-weight: 600;
+}
+
+.theory-block li em {
+    color: var(--color-muted);
+    font-style: italic;
+}
+
+/* Визуальные шаги алгоритма */
+.step-visual {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 32px;
+    padding: 32px;
+    background: linear-gradient(135deg, var(--color-card) 0%, #f0f4f8 100%);
+    border-radius: var(--radius-lg);
+    border: 2px solid var(--color-border);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 51, 102, 0.08);
+}
+
+.step-visual::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--color-primary), var(--color-secondary));
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+}
+
+.step-visual:hover {
+    transform: translateX(8px);
+    box-shadow: 0 8px 24px rgba(0, 51, 102, 0.15);
+    border-color: var(--color-secondary);
+}
+
+/* Номер шага */
+.step-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    color: var(--color-white);
+    border-radius: 50%;
+    font-size: 1.5rem;
+    font-weight: 700;
+    box-shadow: 0 6px 20px rgba(0, 51, 102, 0.3);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+}
+
+.step-visual:hover .step-number {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 8px 24px rgba(0, 51, 102, 0.4);
+}
+
+/* Контент шага */
+.step-content {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+}
+
+.step-content strong {
+    display: block;
+    font-size: 1.4rem;
+    color: var(--color-primary);
+    margin-bottom: 16px;
+    font-weight: 700;
+}
+
+.step-content p {
+    margin-bottom: 12px;
+    color: var(--color-text);
+    line-height: 1.8;
+}
+
+.step-content em {
+    color: var(--color-muted);
+    font-style: italic;
+    display: block;
+    margin-top: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--color-secondary);
+}
+
+/* Информационные блоки */
+.info-box {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border-left: 5px solid var(--color-info);
+    padding: 24px;
+    border-radius: var(--radius-md);
+    margin: 24px 0;
+    box-shadow: 0 4px 12px rgba(23, 162, 184, 0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+.info-box::before {
+    content: 'ℹ️';
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 2rem;
+    opacity: 0.2;
+}
+
+.info-box p {
+    margin: 0;
+    color: var(--color-primary);
+    font-weight: 500;
+    line-height: 1.7;
+}
+
+.info-box strong {
+    color: var(--color-info-dark);
+    font-weight: 700;
+}
+
+/* Предупреждающие блоки */
+.warning-box {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border-left: 5px solid var(--color-warning);
+    padding: 24px;
+    border-radius: var(--radius-md);
+    margin: 24px 0;
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.warning-box::before {
+    content: '⚠️';
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 2rem;
+    opacity: 0.2;
+}
+
+.warning-box p {
+    margin: 0;
+    color: var(--color-warning-dark);
+    font-weight: 500;
+    line-height: 1.7;
+}
+
+.warning-box strong {
+    color: var(--color-warning-dark);
+    font-weight: 700;
+}
+
+/* Техники СЛР - сетка */
+.cpr-technique {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-top: 32px;
+}
+
+.technique-item {
+    background: linear-gradient(135deg, var(--color-white) 0%, var(--color-card) 100%);
+    padding: 28px;
+    border-radius: var(--radius-lg);
+    border: 2px solid var(--color-border);
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 51, 102, 0.08);
+}
+
+.technique-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.technique-item:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 32px rgba(0, 51, 102, 0.15);
+    border-color: var(--color-secondary);
+}
+
+.technique-item h3 {
+    color: var(--color-primary);
+    margin-bottom: 16px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    padding-left: 0;
+}
+
+.technique-item h3::before {
+    display: none;
+}
+
+.technique-item p {
+    color: var(--color-text);
+    line-height: 1.7;
+    margin: 0;
+    text-align: left;
+}
+
+/* Список ошибок */
+.error-list {
+    list-style: none;
+    padding: 0;
+    margin: 32px 0;
+}
+
+.error-list li {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    margin-bottom: 20px;
+    padding: 24px;
+    border-radius: var(--radius-lg);
+    border-left: 5px solid var(--color-warning);
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.15);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.error-list li::before {
+    content: '❌';
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 1.5rem;
+    opacity: 0.2;
+}
+
+.error-list li:hover {
+    transform: translateX(8px);
+    box-shadow: 0 8px 20px rgba(255, 193, 7, 0.25);
+}
+
+.error-list strong {
+    color: var(--color-warning-dark);
+    display: block;
+    margin-bottom: 12px;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.error-list p {
+    margin: 0;
+    color: var(--color-warning-dark);
+    line-height: 1.7;
+}
+
+/* Футер теории */
+.theory-footer {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 3px solid var(--color-border);
+    text-align: center;
+}
+
+.theory-actions {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/* Кнопки действий */
+.theory-action-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 28px;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 16px rgba(0, 51, 102, 0.2);
+    position: relative;
+    overflow: hidden;
+    border: none;
+    cursor: pointer;
+}
+
+.theory-action-button.scenario-button {
+    background: linear-gradient(135deg, #4caf50, #20c997);
+    color: var(--color-white);
+}
+
+.theory-action-button.scenario-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.theory-action-button.scenario-button:hover::before {
+    width: 400px;
+    height: 400px;
+}
+
+.theory-action-button.scenario-button:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(76, 175, 80, 0.4);
+    text-decoration: none;
+    color: var(--color-white);
+}
+
+.theory-action-button .action-icon {
+    font-size: 1.3rem;
+    transition: transform 0.3s ease;
+}
+
+.theory-action-button:hover .action-icon {
+    transform: scale(1.2) rotate(10deg);
+}
+
+.theory-footer .back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+    color: var(--color-white);
+    padding: 14px 28px;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 16px rgba(0, 51, 102, 0.2);
+    border: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.theory-footer .back-button:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 51, 102, 0.4);
+    text-decoration: none;
+    color: var(--color-white);
+}
+
+/* Адаптивный дизайн */
+@media (max-width: 768px) {
+    .theory-content {
+        padding: 32px 24px;
+    }
+    
+    .theory-block {
+        padding: 24px 20px;
+        margin-bottom: 32px;
+    }
+    
+    .theory-block h2 {
+        font-size: 1.6rem;
+    }
+    
+    .theory-block h3 {
+        font-size: 1.3rem;
+    }
+    
+    .theory-block p {
+        font-size: 1rem;
+        text-align: left;
+    }
+    
+    .step-visual {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+        padding: 24px;
+    }
+    
+    .step-visual::before {
+        width: 100%;
+        height: 5px;
+        border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+    
+    .step-visual:hover {
+        transform: translateY(-4px);
+    }
+    
+    .step-number {
+        align-self: center;
+        min-width: 50px;
+        height: 50px;
+        font-size: 1.3rem;
+    }
+    
+    .step-content strong {
+        font-size: 1.2rem;
+    }
+    
+    .cpr-technique {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .theory-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .theory-action-button,
+    .theory-footer .back-button {
+        width: 100%;
+        justify-content: center;
+        padding: 14px 24px;
+    }
+    
+    .info-box,
+    .warning-box {
+        padding: 20px;
+    }
+}
+
+/* Анимация появления блоков */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.theory-block {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.step-visual {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Кастомный скроллбар */
+.theory-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.theory-content::-webkit-scrollbar-track {
+    background: var(--color-card);
+    border-radius: 4px;
+}
+
+.theory-content::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--color-primary), var(--color-secondary));
+    border-radius: 4px;
+}
+
+.theory-content::-webkit-scrollbar-thumb:hover {
+    background: var(--color-secondary);
+}

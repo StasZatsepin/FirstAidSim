@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:;">
+    <meta name="robots" content="noindex, nofollow">
+    <title>FirstAidSim - Интерактивный тренажер первой помощи</title>
+    <!-- Защита от копирования -->
+    <script src="scripts/protection.js"></script>
+    <!-- Стили - модульная структура -->
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/layout.css">
+    <link rel="stylesheet" href="styles/simulator.css">
+    <link rel="stylesheet" href="styles/visualizations.css">
+    <link rel="stylesheet" href="styles/pages.css">
+    <link rel="stylesheet" href="styles/profile.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Header (Шапка) -->
+        <header class="site-header">
+            <div class="header-container">
+                <div class="logo">
+                    <h1>FirstAidSim</h1>
+                </div>
+                <nav class="main-nav" id="mainNav">
+                    <ul class="nav-list">
+                        <li><a href="#" class="nav-link" data-page="home">Главная</a></li>
+                        <li><a href="#" class="nav-link" data-page="scenarios">Сценарии</a></li>
+                        <li><a href="#" class="nav-link" data-page="theory">Теория</a></li>
+                        <li><a href="#" class="nav-link" data-page="about">О проекте</a></li>
+                    </ul>
+                </nav>
+                <div class="user-menu" id="userMenu">
+                    <button class="btn-auth" id="loginButton" onclick="openLoginModal()">
+                        <span class="btn-icon">🔐</span>
+                        <span class="btn-text">Войти</span>
+                    </button>
+                    <button class="btn-auth btn-register" id="registerButton" onclick="openRegisterModal()">
+                        <span class="btn-icon">📝</span>
+                        <span class="btn-text">Регистрация</span>
+                    </button>
+                    <button class="btn-profile" id="profileButton" onclick="window.location.href='profile.html'" style="display: none;">
+                        <span class="user-avatar" id="userAvatar">U</span>
+                        <span class="user-name" id="userName">Пользователь</span>
+                    </button>
+                    <button class="btn-logout" id="logoutButton" onclick="logoutUser()" style="display: none;">
+                        <span class="btn-icon">🚪</span>
+                        <span class="btn-text">Выйти</span>
+                    </button>
+                </div>
+                <button class="nav-toggle" id="navToggle" aria-label="Открыть меню">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Модальное окно входа -->
+        <div class="modal" id="loginModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Вход в систему</h2>
+                    <button class="modal-close" onclick="closeLoginModal()">&times;</button>
+                </div>
+                <form id="loginForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" name="email" required autocomplete="email">
+                        <span class="form-error" id="loginEmailError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Пароль</label>
+                        <input type="password" id="loginPassword" name="password" required autocomplete="current-password">
+                        <span class="form-error" id="loginPasswordError"></span>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Войти</button>
+                        <button type="button" class="btn-secondary" onclick="closeLoginModal(); openRegisterModal();">
+                            Нет аккаунта? Зарегистрироваться
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Модальное окно регистрации -->
+        <div class="modal" id="registerModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Регистрация</h2>
+                    <button class="modal-close" onclick="closeRegisterModal()">&times;</button>
+                </div>
+                <form id="registerForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" id="registerEmail" name="email" required autocomplete="email">
+                        <span class="form-error" id="registerEmailError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Пароль</label>
+                        <input type="password" id="registerPassword" name="password" required autocomplete="new-password" minlength="6">
+                        <span class="form-hint">Минимум 6 символов</span>
+                        <span class="form-error" id="registerPasswordError"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerConfirmPassword">Подтвердите пароль</label>
+                        <input type="password" id="registerConfirmPassword" name="confirmPassword" required autocomplete="new-password">
+                        <span class="form-error" id="registerConfirmPasswordError"></span>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Зарегистрироваться</button>
+                        <button type="button" class="btn-secondary" onclick="closeRegisterModal(); openLoginModal();">
+                            Уже есть аккаунт? Войти
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Главная страница -->
+            <section id="home" class="page-section active">
+                <div class="hero-section">
+                    <div class="hero-content">
+                        <h2 class="hero-title">Тренажер по оказанию первой помощи</h2>
+                        <p class="hero-subtitle">Отработайте жизненно важные навыки в безопасной симуляции</p>
+                        <button class="cta-button" data-page="scenarios">Начать тренировку</button>
+                    </div>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">⚡</div>
+                            <h3>Интерактивные сценарии</h3>
+                            <p>Реагируйте на динамичные ситуации в реалистичных условиях</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">💬</div>
+                            <h3>Мгновенная обратная связь</h3>
+                            <p>Узнайте, верны ли ваши действия, и получите подсказки</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📚</div>
+                            <h3>Официальные рекомендации</h3>
+                            <p>Алгоритмы построены на материалах от ведущих организаций</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Страница сценариев -->
+            <section id="scenarios" class="page-section">
+                <div class="scenarios-section">
+                    <h2 class="section-title">Выберите сценарий</h2>
+                    <p class="section-subtitle">Выберите ситуацию и начните обучение</p>
+                    
+                    <!-- Переключатель режимов -->
+                    <div class="mode-selector">
+                        <div class="mode-option active" data-mode="training">
+                            <span class="mode-icon">✅</span>
+                            <span class="mode-label">Обучение</span>
+                            <span class="mode-description">С подсказками и обратной связью</span>
+                        </div>
+                        <div class="mode-option" data-mode="exam">
+                            <span class="mode-icon">🎯</span>
+                            <span class="mode-label">Экзамен</span>
+                            <span class="mode-description">Без подсказок, ограничение по времени</span>
+                        </div>
+                    </div>
+                    
+                    <div class="scenarios-grid">
+                        <div class="scenario-card">
+                            <div class="scenario-icon cpr-icon">🫀</div>
+                            <h3>Сердечно-легочная реанимация (СЛР)</h3>
+                            <p>Человек без сознания и не дышит</p>
+                            <button class="scenario-button" data-start-scenario="cpr">Начать</button>
+                        </div>
+                        <div class="scenario-card">
+                            <div class="scenario-icon bleeding-icon">🩸</div>
+                            <h3>Артериальное кровотечение</h3>
+                            <p>Сильное кровотечение из конечности</p>
+                            <button class="scenario-button" data-start-scenario="bleeding">Начать</button>
+                        </div>
+                        <div class="scenario-card">
+                            <div class="scenario-icon burn-icon">🔥</div>
+                            <h3>Термический ожог</h3>
+                            <p>Поражение кожи высокими температурами</p>
+                            <button class="scenario-button" data-start-scenario="burn">Начать</button>
+                        </div>
+                        <div class="scenario-card">
+                            <div class="scenario-icon faint-icon">😵</div>
+                            <h3>Потеря сознания</h3>
+                            <p>Внезапное ухудшение самочувствия и падение</p>
+                            <button class="scenario-button" data-start-scenario="faint">Начать</button>
+                        </div>
+                        <div class="scenario-card">
+                            <div class="scenario-icon anaphylaxis-icon">🐝</div>
+                            <h3>Анафилактический шок</h3>
+                            <p>Тяжелая аллергическая реакция после укуса пчелы</p>
+                            <button class="scenario-button" data-start-scenario="anaphylaxis">Начать</button>
+                        </div>
+                        <div class="scenario-card">
+                            <div class="scenario-icon fracture-icon">🦴</div>
+                            <h3>Открытый перелом</h3>
+                            <p>Травма с видимой костью и сильной болью</p>
+                            <button class="scenario-button" data-start-scenario="fracture">Начать</button>
+                        </div>
+                        <div class="scenario-card">
+                            <div class="scenario-icon drowning-icon">🌊</div>
+                            <h3>Спасение утопающего</h3>
+                            <p>Человек без сознания извлечен из воды</p>
+                            <button class="scenario-button" data-start-scenario="drowning">Начать</button>
+                        </div>
+                        <div class="scenario-card">
+                            <div class="scenario-icon poisoning-icon">🍄</div>
+                            <h3>Пищевое отравление</h3>
+                            <p>Боли в животе и тошнота после еды</p>
+                            <button class="scenario-button" data-start-scenario="poisoning">Начать</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Страница симулятора -->
+            <section id="simulator" class="page-section">
+                <div class="simulator-section">
+                    <div class="simulator-header">
+                        <h2 class="simulator-title" id="simulatorTitle">Сценарий: Выберите сценарий</h2>
+                        <div class="simulator-actions">
+                            <button class="theory-button" id="theoryButton" style="display: none;">
+                                <span class="theory-icon">📚</span>
+                                <span class="theory-text">Открыть теорию</span>
+                            </button>
+                            <button class="back-button" id="backToScenariosButton" data-page="scenarios">
+                                <span class="back-icon">←</span>
+                                <span class="back-text">Вернуться к сценариям</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Экзаменационная панель (скрыта в режиме обучения) -->
+                    <div class="exam-panel hidden" id="examPanel">
+                        <div class="exam-timer">
+                            <span class="exam-timer-label">Осталось времени:</span>
+                            <span class="exam-timer-value" id="examTimer">03:00</span>
+                        </div>
+                        <div class="exam-steps">
+                            <span class="exam-steps-label">Выполнено шагов:</span>
+                            <span class="exam-steps-value" id="examSteps">0</span>
+                        </div>
+                        <button class="exam-finish-button" id="examFinishButton">Завершить досрочно</button>
+                    </div>
+                    
+                    <!-- Счет и прогресс (скрыто в режиме экзамена) -->
+                    <div class="score-progress-container" id="scoreProgressContainer">
+                        <div class="score-display">
+                            <span class="score-label">Счет:</span>
+                            <span class="score-value" id="scoreDisplay">100</span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-label">Прогресс</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Основной контент симулятора -->
+                    <div class="simulator-layout">
+                        <!-- Левая часть: Сцена и описание -->
+                        <div class="scene-panel">
+                            <div class="image-container" id="scenarioVisualization">
+                                <!-- CSS-визуализации будут добавлены через классы -->
+                            </div>
+                            <div class="description-container">
+                                <p class="situation-text" id="situationText">
+                                    Здесь будет описание текущей ситуации...
+                                </p>
+                            </div>
+                            <div class="feedback-container hidden" id="feedbackContainer">
+                                <p class="feedback-text" id="feedbackText"></p>
+                            </div>
+                        </div>
+
+                        <!-- Правая часть: Действия -->
+                        <div class="actions-panel">
+                            <h3 class="actions-title">Ваши действия:</h3>
+                            <div class="actions-container" id="actionsContainer">
+                                <!-- Кнопки действий будут добавлены через JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Финальный отчет -->
+                    <div class="final-report hidden" id="finalReport">
+                        <!-- Содержимое будет добавлено через JavaScript -->
+                    </div>
+                    
+                    <!-- Сертификат (только для экзамена) -->
+                    <div class="certificate-container hidden" id="certificateContainer">
+                        <!-- Содержимое будет добавлено через JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Страница теории -->
+            <section id="theory" class="page-section">
+                <div class="theory-section">
+                    <h2 class="section-title">Теория и алгоритмы</h2>
+                    <p class="section-subtitle">Подробные описания алгоритмов оказания первой помощи</p>
+                    <div class="theory-grid">
+                        <a href="theory/cpr.html" class="theory-card" target="_self">
+                            <div class="theory-icon">🫀</div>
+                            <h3>Сердечно-легочная реанимация (СЛР)</h3>
+                            <p>Алгоритм базовой сердечно-легочной реанимации для взрослых. Включает проверку безопасности, оценку состояния, вызов скорой помощи и выполнение компрессий грудной клетки с искусственной вентиляцией легких в соотношении 30:2.</p>
+                        </a>
+                        <a href="theory/bleeding.html" class="theory-card">
+                            <div class="theory-icon">🩸</div>
+                            <h3>Артериальное кровотечение</h3>
+                            <p>Остановка сильного артериального кровотечения. Методы прямого давления, наложения жгута и правильной последовательности действий для предотвращения кровопотери.</p>
+                        </a>
+                        <a href="theory/burn.html" class="theory-card">
+                            <div class="theory-icon">🔥</div>
+                            <h3>Термический ожог</h3>
+                            <p>Первая помощь при термических ожогах. Правильное охлаждение, обработка раны и когда необходимо обращаться за медицинской помощью.</p>
+                        </a>
+                        <a href="theory/faint.html" class="theory-card">
+                            <div class="theory-icon">😵</div>
+                            <h3>Потеря сознания</h3>
+                            <p>Алгоритм действий при потере сознания. Проверка дыхания, стабильное боковое положение и контроль состояния до приезда медиков.</p>
+                        </a>
+                        <a href="theory/anaphylaxis.html" class="theory-card">
+                            <div class="theory-icon">🐝</div>
+                            <h3>Анафилактический шок</h3>
+                            <p>Распознавание и первая помощь при анафилактическом шоке. Использование автоинжектора адреналина и правильное позиционирование пострадавшего.</p>
+                        </a>
+                        <a href="theory/fracture.html" class="theory-card">
+                            <div class="theory-icon">🦴</div>
+                            <h3>Открытый перелом</h3>
+                            <p>Первая помощь при открытом переломе. Остановка кровотечения, иммобилизация конечности и профилактика шока.</p>
+                        </a>
+                        <a href="theory/drowning.html" class="theory-card">
+                            <div class="theory-icon">🌊</div>
+                            <h3>Спасение утопающего</h3>
+                            <p>Алгоритм спасения утопающего. Извлечение из воды, оценка состояния, СЛР с учетом особенностей утопления.</p>
+                        </a>
+                        <a href="theory/poisoning.html" class="theory-card">
+                            <div class="theory-icon">🍄</div>
+                            <h3>Пищевое отравление</h3>
+                            <p>Первая помощь при пищевом отравлении. Оценка симптомов, когда вызывать скорую помощь и что делать до приезда медиков.</p>
+                        </a>
+                    </div>
+                    <div class="accordion-container" style="display: none;">
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                <span>СЛР: базовый алгоритм</span>
+                                <span class="accordion-icon">+</span>
+                            </button>
+                            <div class="accordion-content">
+                                <ol>
+                                    <li>Убедитесь в безопасности места</li>
+                                    <li>Проверьте сознание и дыхание</li>
+                                    <li>Вызовите скорую помощь / 112</li>
+                                    <li>Начните компрессии грудной клетки 30:2</li>
+                                    <li>Используйте AED при наличии</li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                <span>Артериальное кровотечение</span>
+                                <span class="accordion-icon">+</span>
+                            </button>
+                            <div class="accordion-content">
+                                <ol>
+                                    <li>Наденьте перчатки</li>
+                                    <li>Надавите на рану чистой тканью</li>
+                                    <li>Наложите жгут выше раны</li>
+                                    <li>Отметьте время наложения</li>
+                                    <li>Дождитесь врачей</li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                <span>Термический ожог</span>
+                                <span class="accordion-icon">+</span>
+                            </button>
+                            <div class="accordion-content">
+                                <ol>
+                                    <li>Прекратите контакт с источником тепла</li>
+                                    <li>Охлаждайте ожог прохладной водой 10-20 минут</li>
+                                    <li>Накройте стерильной повязкой</li>
+                                    <li>Не используйте масла и кремы</li>
+                                    <li>Обратитесь за медицинской помощью при серьезных ожогах</li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                <span>Потеря сознания</span>
+                                <span class="accordion-icon">+</span>
+                            </button>
+                            <div class="accordion-content">
+                                <ol>
+                                    <li>Проверьте дыхание</li>
+                                    <li>Уложите в стабильное боковое положение</li>
+                                    <li>Контролируйте дыхание до приезда врачей</li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                <span>Анафилактический шок</span>
+                                <span class="accordion-icon">+</span>
+                            </button>
+                            <div class="accordion-content">
+                                <ol>
+                                    <li>Распознайте симптомы анафилаксии (отек, сыпь, затрудненное дыхание)</li>
+                                    <li>Вызовите скорую помощь (112)</li>
+                                    <li>Используйте автоинжектор адреналина (если есть) - введите в наружную поверхность бедра</li>
+                                    <li>Помогите принять положение, облегчающее дыхание (полусидя или сидя)</li>
+                                    <li>Контролируйте состояние до приезда медиков</li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                <span>Открытый перелом</span>
+                                <span class="accordion-icon">+</span>
+                            </button>
+                            <div class="accordion-content">
+                                <ol>
+                                    <li>Оцените безопасность места происшествия</li>
+                                    <li>Вызовите скорую помощь (112)</li>
+                                    <li>Остановите кровотечение (если есть) - надавите на рану чистой тканью</li>
+                                    <li>Иммобилизуйте конечность с помощью шины - фиксируйте в том положении, в котором она находится</li>
+                                    <li>Обработайте рану - накройте стерильной повязкой, не надавливая на кость</li>
+                                    <li>Контролируйте шок - уложите, приподнимите ноги, согрейте</li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                <span>Спасение утопающего</span>
+                                <span class="accordion-icon">+</span>
+                            </button>
+                            <div class="accordion-content">
+                                <ol>
+                                    <li>Проверьте безопасность - уберите человека из воды</li>
+                                    <li>Проверьте сознание и дыхание</li>
+                                    <li>Вызовите скорую помощь (112)</li>
+                                    <li>Начните СЛР с учетом возможного утопления (30:2)</li>
+                                    <li>При рвоте - поверните на бок, очистите рот, затем продолжите СЛР</li>
+                                    <li>Продолжайте СЛР до приезда медиков или восстановления дыхания</li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                <span>Пищевое отравление</span>
+                                <span class="accordion-icon">+</span>
+                            </button>
+                            <div class="accordion-content">
+                                <ol>
+                                    <li>Оцените симптомы и возможную причину отравления</li>
+                                    <li>Вызовите скорую помощь при тяжелых симптомах (сильная боль, рвота, диарея)</li>
+                                    <li>Не вызывайте рвоту самостоятельно - при некоторых отравлениях это опасно</li>
+                                    <li>Сохраните образец отравляющего вещества для медиков</li>
+                                    <li>Контролируйте сознание и дыхание, уложите в безопасное положение</li>
+                                    <li>Подготовьте информацию для медиков: время отравления, симптомы, что было съедено</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Страница о проекте -->
+            <section id="about" class="page-section">
+                <div class="about-section">
+                    <h2 class="section-title">О проекте</h2>
+                    <div class="about-content">
+                        <p>FirstAidSim — это интерактивный тренажер для обучения навыкам оказания первой помощи. Проект создан с целью популяризации знаний о первой помощи и повышения готовности людей к экстренным ситуациям.</p>
+                        <p>Все алгоритмы действий основаны на официальных рекомендациях ведущих медицинских организаций и регулярно обновляются в соответствии с актуальными стандартами.</p>
+                        <p>Используя симулятор, вы можете безопасно отработать навыки оказания первой помощи без риска для здоровья, получая мгновенную обратную связь о правильности ваших действий.</p>
+                    </div>
+                    <div class="about-footer">
+                        <p>© <span id="currentYear"></span> FirstAidSim Team</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Страница профиля -->
+            <section id="profile" class="page-section">
+                <div class="profile-section">
+                    <div class="profile-header">
+                        <h2 class="section-title">Профиль пользователя</h2>
+                        <button class="back-button" onclick="showPage('home')">← На главную</button>
+                    </div>
+                    
+                    <div class="profile-content" id="profileContent">
+                        <!-- Контент будет загружен через JavaScript -->
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Футер -->
+        <footer class="site-footer">
+            <div class="footer-container">
+                <div class="footer-content">
+                    <div class="footer-section footer-main">
+                        <h3 class="footer-title">FirstAidSim</h3>
+                        <p class="footer-description">Интерактивный тренажер для обучения навыкам оказания первой помощи</p>
+                    </div>
+                    <div class="footer-section footer-social">
+                        <h4 class="footer-heading">Социальные сети</h4>
+                        <div class="social-links">
+                            <a href="https://vk.com/s.nartshaevhome" target="_blank" rel="noopener noreferrer" class="social-link" title="ВКонтакте">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12.785 16.241s.288-.029.436-.18c.136-.137.132-.393.132-.393s-.02-1.123.515-1.288c.526-.164 1.203 1.09 1.92 1.571.54.36.95.28.95.28l1.92-.028s1.003-.066.526-.86c-.039-.066-.276-.58-1.43-1.643-1.21-1.12-1.05-.47.41-1.44.28-.19.49-.62.49-.62s.088-.52-.088-.6c-.177-.08-.44-.052-.44-.052h-1.13s-.84.01-1.05.34c-.21.33-.77 1.1-.77 1.1s-.14.27-.33.27c-.19 0-.5-.27-.5-.27s-.89-1.18-1.24-1.58c-.17-.2-.37-.27-.37-.27h-.94s-.52.02-.68.24c-.16.22-.01.68-.01.68s.63 1.48 1.35 2.28c1.28 1.28 1.71 1.51 1.93 1.23.22-.28.16-1.12.16-1.12s.01-.4-.11-.54c-.12-.14-.35-.18-.35-.18h-.68s-.51.02-.66.16c-.15.14-.01.45-.01.45s.11.35.25.52c.25.3.42.39.42.39s.19.12.19.31c0 .19-.23.31-.23.31s-.19.06-.42-.06c-.23-.12-.49-.35-.68-.6-.19-.25-.35-.5-.35-.5s-.03-.19.11-.31c.14-.12.35-.12.35-.12h.19s.19-.02.27-.12c.08-.1.05-.19.05-.19s-.03-.25-.19-.35c-.16-.1-.45-.1-.45-.1h-.94s-.68.02-.84.19c-.16.17-.01.52-.01.52s.8 1.88 1.7 2.83c.83.88 1.77 1.23 1.77 1.23h.47s.19.01.26.11c.07.1.01.31.01.31s-.03.89.19 1.01c.22.12.49-.06.49-.06s.73-.51 1.24-1.01c.51-.5 1.02-1.01 1.02-1.01z"/>
+                                </svg>
+                                <span>ВКонтакте</span>
+                            </a>
+                            <a href="https://t.me/StasNartshaev" target="_blank" rel="noopener noreferrer" class="social-link" title="Telegram">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161l-1.97 9.276c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.12l-6.87 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
+                                </svg>
+                                <span>Telegram</span>
+                            </a>
+                            <a href="https://github.com/StasZatsepin" target="_blank" rel="noopener noreferrer" class="social-link" title="GitHub">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                </svg>
+                                <span>GitHub</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; <span id="currentYearFooter"></span> FirstAidSim Team. Все права защищены.</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Скрипты -->
+    <script src="scripts/scenarios-loader.js"></script>
+    <script src="scripts/scenarios/cpr.js"></script>
+    <script src="scripts/scenarios/bleeding.js"></script>
+    <script src="scripts/scenarios/burn.js"></script>
+    <script src="scripts/scenarios/faint.js"></script>
+    <script src="scripts/scenarios/anaphylaxis.js"></script>
+    <script src="scripts/scenarios/fracture.js"></script>
+    <script src="scripts/scenarios/drowning.js"></script>
+    <script src="scripts/scenarios/poisoning.js"></script>
+    <script src="scripts/visualizations.js"></script>
+    <script src="scripts/auth.js"></script>
+    <script src="scripts/user.js"></script>
+    <script src="scripts/achievements.js"></script>
+    <script src="scripts/main.js"></script>
+    <script src="scripts/profile.js"></script>
+</body>
+</html>
